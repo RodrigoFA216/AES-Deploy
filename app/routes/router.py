@@ -64,7 +64,7 @@ async def reciveImage(file: UploadFile = File(...)):
 
 
 # este endpont es de desarrollo, aun no pidas cosas acá
-@router.post("/API/Encrypt/", tags=["Recive Imagen"])
+@router.post("/API/Hide/", tags=["Recive Imagen"])
 async def reciveImage(file: UploadFile = File(...)):
     if file.filename[-4:] in imgFormats:
         # Uno la ruta de imgFolder con el nombre del archivo menos la extensión
@@ -104,7 +104,7 @@ async def reciveImage(file: UploadFile = File(...)):
         )
 
 
-@router.post("/API/Decrypt/", tags=["Recive Imagen"])
+@router.post("/API/Unhide/", tags=["Recive Imagen"])
 async def decrypt_image(file: UploadFile = File(...)):
     if file.filename[-4:] in cifFormats:
         # Uno la ruta de imgCifFolder con el nombre del archivo menos la extensión

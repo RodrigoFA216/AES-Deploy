@@ -14,3 +14,27 @@ async def calculate_psnr(image1_path, image2_path):
     max_pixel = 255.0
     psnr = 20 * np.log10(max_pixel / np.sqrt(mse))
     return psnr
+
+
+
+
+# import cv2
+# import numpy as np
+
+# def calculate_psnr(image1, image2):
+#     # Convert images to numpy arrays
+#     image1 = np.array(image1)
+#     image2 = np.array(image2)
+
+#     # Calculate the mean square error between the two images
+#     mse = np.mean((image1 - image2) ** 2)
+
+#     # Handle the case where the mean square error is zero (the images are identical)
+#     if mse == 0:
+#         return float('inf')
+
+#     # Calculate the PSNR
+#     max_pixel_value = 255.0
+#     psnr = 20 * np.log10(max_pixel_value / np.sqrt(mse))
+
+#     return psnr
