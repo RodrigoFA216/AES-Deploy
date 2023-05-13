@@ -57,7 +57,7 @@ async def decipher_image(key, vector, path, name):
     # Desencriptar la imagen
     img_desencriptada = aes.decrypt(img_cifrada)
     # Eliminar el relleno
-    # img_desencriptada = unpad(img_desencriptada, AES.block_size)
+    img_desencriptada = unpad(img_desencriptada, AES.block_size)
     # Crear la imagen a partir de los bytes desencriptados
     img = cv2.imdecode(
         np.frombuffer(img_desencriptada, dtype=np.uint8), cv2.IMREAD_COLOR

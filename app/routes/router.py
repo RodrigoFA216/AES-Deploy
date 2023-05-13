@@ -80,7 +80,6 @@ async def reciveImage(file: UploadFile = File(...)):
         res_divide = await divide_img.divide(file_path, file.filename)
         # Respondo un archivo con la dirección de guardado
         if res_divide["success"] == True:  # esto también debería ir en un try catch
-            res_cif = await cypher_image(clave, iv, file_path, file.filename)
             res_hide = await hide_img(
                 res_divide["img_yfile"],
                 res_divide["img_cbmin"],
@@ -88,8 +87,14 @@ async def reciveImage(file: UploadFile = File(...)):
             )
             if res_hide["success"] == True:
                 return FileResponse(res_hide["y-hided"])
+                # Acá comienzo el cifrado
+                # res_cif = await cypher_image(clave, iv, file_path, file.filename)
             else:
-                return FileResponse(res_divide["img_ycrfile"])
+                return JSONResponse(
+                    content={
+                        "Error": res_hide["error"],
+                    }
+                )
             res_uncif = await decipher_image(clave, iv, file_path, file.filename)
         else:
             return JSONResponse(

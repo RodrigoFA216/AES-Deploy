@@ -48,9 +48,7 @@ async def hide_img(path_y, path_a, path_b):
         B_vec_bin_full = "".join(B_vec_bin)
         info_hide = A_vec_bin_full + B_vec_bin_full
         # Debug, imprimo las características
-        print("height: ", h, h%16, " width: ", w)
-        print(len(Y_vec_bin) * 8)
-        print(len(info_hide))
+        print("height: ", h, h % 16, " width: ", w, w % 16)
         # Inicio el ocultamiento de la información
         Y_vec_bin_hided = Y_vec_bin
         for indice, elemento in enumerate(info_hide):

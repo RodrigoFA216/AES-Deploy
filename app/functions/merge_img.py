@@ -38,7 +38,19 @@ async def merge(path, name):
             lect = lect + data[:-1]
         # Descarto la información a la derecha de la mitad de la información
         lect = lect[: (len(lect) // 2)]
-        cb_and_cr_lenght = len(lect) // 2
+        # Separo la primer componente
+        comp_1 = lect[: (len(lect) // 2)]
+        # Separo la segunda componente
+        comp_2 = lect[len(comp_1) :]
+        # Los hago matrices
+        comp_1_reshaped = np.reshape(comp_1, (h // 4, w // 4))
+        comp_2_reshaped = np.reshape(comp_2, (h // 4, w // 4))
+        # Redimensionar las componentes de color
+        cb_redim = cv2.resize(comp_1_reshaped, (w, h), interpolation=cv2.INTER_CUBIC)
+        cr_redim = cv2.resize(comp_2_reshaped, (w, h), interpolation=cv2.INTER_CUBIC)
+        # Aplicar GaussianBlur
+        cb_redim_smooth = cv2.GaussianBlur(cb_redim, (3, 3), 0)
+        cr_redim_smooth = cv2.GaussianBlur(cr_redim, (3, 3), 0)
         return {
             "success": True,
             "erorr": None,
