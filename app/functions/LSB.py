@@ -49,6 +49,13 @@ async def hide_img(path_y, path_a, path_b):
         info_hide = A_vec_bin_full + B_vec_bin_full
         # Debug, imprimo las características
         print("height: ", h, h % 16, " width: ", w, w % 16)
+        counter = np.array([])
+        row = -1
+        col = -1
+        for fila in Y:
+            row += 1
+            for columna in fila:
+                counter[row, col]
         # Inicio el ocultamiento de la información
         Y_vec_bin_hided = Y_vec_bin
         for indice, elemento in enumerate(info_hide):
