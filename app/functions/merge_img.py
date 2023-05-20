@@ -16,6 +16,7 @@ def complete_octet(bin_str):
 async def merge(path, name):
     carpeta_img = path
     open_img = name
+    print(carpeta_img)
     img = cv2.imread(carpeta_img, cv2.IMREAD_UNCHANGED)
     # Height alto Width ancho
     properties = img.shape
@@ -36,6 +37,17 @@ async def merge(path, name):
         lect = ""
         for data in img_vector_bin:
             lect = lect + data[:-1]
+        mi_string = "abcdefghijklmnop"
+        longitud_total = len(mi_string)
+        cantidad_grupos = longitud_total // 8
+        hay_incompleto = longitud_total % 8 != 0
+        grupos = np.array([lect[i : i + 8] for i in range(0, longitud_total, 8)])
+        return {"success": True, "error": None, "value": grupos}
+        if hay_incompleto:
+            return {"success": False, "error": None, "value": grupos}
+        else:
+            return {"success": True, "error": None, "value": grupos}
+        print(lect)
         # Descarto la información a la derecha de la mitad de la información
         lect = lect[: (len(lect) // 2)]
         # Separo la primer componente
@@ -51,10 +63,18 @@ async def merge(path, name):
         # Aplicar GaussianBlur
         cb_redim_smooth = cv2.GaussianBlur(cb_redim, (3, 3), 0)
         cr_redim_smooth = cv2.GaussianBlur(cr_redim, (3, 3), 0)
-        return {
-            "success": True,
-            "erorr": None,
-        }
+        cb_h, cb_w = cb_redim_smooth.shape
+        cr_h, cr_w = cr_redim_smooth.shape
+        if cb_h == h & cr_h == h:
+            if cb_w == w & cr_w == w:
+                image_merged = cv2.merge([img, cb_redim_smooth, cr_redim_smooth])
+                img_merg = f"{carpeta_img[:-4]}-M-{open_img[-4:]}"
+                cv2.imwrite(carpeta_img[:-4] + "-M-" + open_img[-4:], image_merged)
+                return {"success": True, "error": None, "img": img_merg}
+            else:
+                return {"success": False, "error": "With not match"}
+        else:
+            return {"success": False, "error": "Height not match"}
     elif len(properties) > 3:
         return {
             "success": False,

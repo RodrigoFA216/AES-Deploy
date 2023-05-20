@@ -8,6 +8,7 @@ app.title = "API REST para Esteganografia y Cifrado"
 app.version = "1.0.0"
 
 origins = [
+    "http://127.0.0.1:8000/",
     "*",
 ]
 
@@ -20,6 +21,11 @@ app.add_middleware(
 )
 
 
-@app.get('/', status_code=200, response_description="Petición válida", tags=['Get', 'Hello world'])
+@app.get(
+    "/",
+    status_code=200,
+    response_description="Petición válida",
+    tags=["Get", "Hello world"],
+)
 def helloWorld():
     return {"message": "Hello"}

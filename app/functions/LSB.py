@@ -67,9 +67,7 @@ async def hide_img(path_y, path_a, path_b):
         # Regreso la info a sus dimenciones de matriz
         Y_vec_bin_hided_int_reshaped = np.reshape(Y_vec_bin_hided_int, (h, w))
         # Guardo la imágen y regreso los valores
-        cv2.imwrite(
-            path_y[:-7] + "-Y-hided-" + path_y[-4:], Y_vec_bin_hided_int_reshaped
-        )
+        cv2.imwrite(path_y[:-7] + "-Y-h-" + path_y[-4:], Y_vec_bin_hided_int_reshaped)
         img_y_hided = f"{path_y[:-7]}-Y-hided-{path_y[-4:]}"
         return {
             "success": True,

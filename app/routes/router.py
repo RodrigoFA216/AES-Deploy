@@ -123,8 +123,9 @@ async def decrypt_image(file: UploadFile = File(...)):
             F.write(content)
             F.close()
         res_merge = await merge_img.merge(file_path, file.filename)
+        print(file_path)
         if res_merge["success"] == True:
-            return FileResponse(file_path)
+            return {"Success": res_merge["success"]}
         else:
             return JSONResponse(
                 content={
