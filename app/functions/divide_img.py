@@ -19,11 +19,13 @@ async def divide(path, name):
             y, cb, cr = cv2.split(img_yuv)
             ycb = cv2.merge([y, cb, np.zeros_like(cb)])
             ycr = cv2.merge([y, np.zeros_like(cr), cr])
+            ycbcr = cv2.merge([y, cb, cr])
             cv2.imwrite(carpeta_img[:-4] + "-Y-" + open_img[-4:], y)
             cv2.imwrite(carpeta_img[:-4] + "-Cb-" + open_img[-4:], cb)
             cv2.imwrite(carpeta_img[:-4] + "-Cr-" + open_img[-4:], cr)
             cv2.imwrite(carpeta_img[:-4] + "-YCb-" + open_img[-4:], ycb)
             cv2.imwrite(carpeta_img[:-4] + "-YCr-" + open_img[-4:], ycr)
+            cv2.imwrite(carpeta_img[:-4] + "-YCbCr-" + open_img[-4:], ycbcr)
             img_y = f"{carpeta_img[:-4]}-Y-{open_img[-4:]}"
             img_cb = f"{carpeta_img[:-4]}-Cb-{open_img[-4:]}"
             img_cr = f"{carpeta_img[:-4]}-Cr-{open_img[-4:]}"

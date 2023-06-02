@@ -2,14 +2,36 @@
 
 # print(vector[: (len(vector) // 2)])
 
-# from app.functions.eval import calculate_psnr
+from app.functions.eval import calculate_psnr
+import cv2
 
-# img_hided = 'C:/Users/ThinkPad/Documents/TITULACION_CEDILLO/AES-Deploy/app/temp/img/IMG30/IMG30-Y-hided-.jpg'
-# img_Y = 'C:/Users/ThinkPad/Documents/TITULACION_CEDILLO/AES-Deploy/app/temp/img/IMG30/IMG30-Y-.jpg'
+img_hided = "C:/Users/ThinkPad/Documents/TITULACION_CEDILLO/AES-Deploy/app/temp/img/IMG30/IMG30-Y-hided-.jpg"
+img_Y = "C:/Users/ThinkPad/Documents/TITULACION_CEDILLO/AES-Deploy/app/temp/img/IMG30/IMG30-Y-.jpg"
+img_cb = "C:/Users/ThinkPad/Documents/TITULACION_CEDILLO/AES-Deploy/app/temp/img/IMG30/IMG30-Cb-.jpg"
+img_cr = "C:/Users/ThinkPad/Documents/TITULACION_CEDILLO/AES-Deploy/app/temp/img/IMG30/IMG30-Cr-.jpg"
 
-# result = calculate_psnr( img_Y, img_hided)
 
-# print(result)
+imgY = cv2.imread(img_Y, cv2.IMREAD_UNCHANGED)
+imgCB = cv2.imread(img_cb, cv2.IMREAD_UNCHANGED)
+imgCR = cv2.imread(img_cr, cv2.IMREAD_UNCHANGED)
+
+imgYCBCR = cv2.merge([imgY, imgCB, imgCR])
+cv2.imwrite(
+    "C:/Users/ThinkPad/Documents/TITULACION_CEDILLO/AES-Deploy/app/temp/img/IMG30/IMG30-m.jpg",
+    imgYCBCR,
+)
+imgRGB = cv2.cvtColor(imgYCBCR, cv2.COLOR_YCrCb2BGR)
+cv2.imwrite(
+    "C:/Users/ThinkPad/Documents/TITULACION_CEDILLO/AES-Deploy/app/temp/img/IMG30/IMG30-n.jpg",
+    imgRGB,
+)
+
+
+result = calculate_psnr(
+    "C:/Users/ThinkPad/Documents/TITULACION_CEDILLO/AES-Deploy/app/temp/img/IMG30/IMG30-n.jpg",
+    "C:/Users/ThinkPad/Documents/TITULACION_CEDILLO/AES-Deploy/app/temp/img/IMG30/IMG30.jpg",
+)
+print(result)
 
 # ----------------------------------------------------------------
 # Reemplaza los valores del array 2 en el vector arr1
@@ -97,41 +119,41 @@
 # ----------------------------------------------------------------
 # Completa la matriz con ceros / hay que poner un try catch
 # ----------------------------------------------------------------
-import numpy as np
+# import numpy as np
 
 
-def completar_matriz(matriz):
-    filas, columnas = matriz.shape
-    if columnas % 16 == 0:
-        return matriz
-    columnas_faltantes = 16 - (columnas % 16)
-    matriz_completa = np.concatenate(
-        (matriz, np.zeros((filas, columnas_faltantes))), axis=1
-    )
-    return matriz_completa
+# def completar_matriz(matriz):
+#     filas, columnas = matriz.shape
+#     if columnas % 16 == 0:
+#         return matriz
+#     columnas_faltantes = 16 - (columnas % 16)
+#     matriz_completa = np.concatenate(
+#         (matriz, np.zeros((filas, columnas_faltantes))), axis=1
+#     )
+#     return matriz_completa
 
 
-def complete_octet(bin_str):
-    # Calcula la cantidad de ceros que se deben agregar
-    num_zeros = 8 - len(bin_str)
-    # Agrega los ceros a la izquierda del número binario
-    return "0" * num_zeros + bin_str
+# def complete_octet(bin_str):
+#     # Calcula la cantidad de ceros que se deben agregar
+#     num_zeros = 8 - len(bin_str)
+#     # Agrega los ceros a la izquierda del número binario
+#     return "0" * num_zeros + bin_str
 
 
-# Función que convierte todo a binario
-bin_func = np.vectorize(lambda x: complete_octet(format(x, "b")))
-int_func = np.vectorize(lambda x: int(x, 2))  # Función que combierte todo a decimal
+# # Función que convierte todo a binario
+# bin_func = np.vectorize(lambda x: complete_octet(format(x, "b")))
+# int_func = np.vectorize(lambda x: int(x, 2))  # Función que combierte todo a decimal
 
-my_array = np.array([[1, 2], [3, 4]])
-mi_matriz = np.array(
-    [
-        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
-        [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
-    ]
-)
-matriz_mult = completar_matriz(mi_matriz)
-# matriz_completa = bin_func(matriz_mult)
-print(complete_octet((format(10, "b"))))
+# my_array = np.array([[1, 2], [3, 4]])
+# mi_matriz = np.array(
+#     [
+#         [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+#         [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14],
+#     ]
+# )
+# matriz_mult = completar_matriz(mi_matriz)
+# # matriz_completa = bin_func(matriz_mult)
+# print(complete_octet((format(10, "b"))))
 
 # ----------------------------------------------------------------
 # Obtiene el indice máximo y mínimo de cada matriz

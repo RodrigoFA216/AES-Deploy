@@ -41,8 +41,8 @@ async def merge(path, name):
         longitud_total = len(mi_string)
         cantidad_grupos = longitud_total // 8
         hay_incompleto = longitud_total % 8 != 0
-        grupos = np.array([lect[i : i + 8] for i in range(0, longitud_total, 8)])
         return {"success": True, "error": None, "value": grupos}
+        grupos = np.array([lect[i : i + 8] for i in range(0, longitud_total, 8)])
         if hay_incompleto:
             return {"success": False, "error": None, "value": grupos}
         else:

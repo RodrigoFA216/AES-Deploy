@@ -49,13 +49,6 @@ async def hide_img(path_y, path_a, path_b):
         info_hide = A_vec_bin_full + B_vec_bin_full
         # Debug, imprimo las características
         print("height: ", h, h % 16, " width: ", w, w % 16)
-        counter = np.array([])
-        row = -1
-        col = -1
-        for fila in Y:
-            row += 1
-            for columna in fila:
-                counter[row, col]
         # Inicio el ocultamiento de la información
         Y_vec_bin_hided = Y_vec_bin
         for indice, elemento in enumerate(info_hide):
@@ -68,7 +61,7 @@ async def hide_img(path_y, path_a, path_b):
         Y_vec_bin_hided_int_reshaped = np.reshape(Y_vec_bin_hided_int, (h, w))
         # Guardo la imágen y regreso los valores
         cv2.imwrite(path_y[:-7] + "-Y-h-" + path_y[-4:], Y_vec_bin_hided_int_reshaped)
-        img_y_hided = f"{path_y[:-7]}-Y-hided-{path_y[-4:]}"
+        img_y_hided = f"{path_y[:-7]}-Y-h-{path_y[-4:]}"
         return {
             "success": True,
             "error": None,
