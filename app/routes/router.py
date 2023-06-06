@@ -88,7 +88,7 @@ async def reciveImage(file: UploadFile = File(...)):
             )
             if res_hide["success"] == True:
                 res_merge = await merge_img.merge(res_hide["y-hided"], file.filename)
-                return FileResponse(res_merge["img"])
+                return FileResponse(res_hide["y-hided"])
                 # Acá comienzo el cifrado
                 # res_cif = await cypher_image(clave, iv, file_path, file.filename)
             else:
