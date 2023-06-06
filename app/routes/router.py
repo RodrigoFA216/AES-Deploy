@@ -1,5 +1,6 @@
 from fastapi import APIRouter, UploadFile, File
 from fastapi.responses import JSONResponse, FileResponse
+import time
 from typing import List
 import os
 from os import getcwd
@@ -86,7 +87,8 @@ async def reciveImage(file: UploadFile = File(...)):
                 res_divide["img_crmin"],
             )
             if res_hide["success"] == True:
-                return FileResponse(res_hide["y-hided"])
+                res_merge = await merge_img.merge(res_hide["y-hided"], file.filename)
+                return FileResponse(res_merge["img"])
                 # Acá comienzo el cifrado
                 # res_cif = await cypher_image(clave, iv, file_path, file.filename)
             else:
@@ -112,9 +114,23 @@ async def reciveImage(file: UploadFile = File(...)):
 @router.post("/API/Hide/", tags=["Recive Imagen"])
 async def reciveImage(file: UploadFile = File(...)):
     try:
-        if file.filename[-4:] in imgFormats:
-            # Uno la ruta de imgFolder con el nombre del archivo menos la extensión
-            file_folder = os.path.join(imgFolder, file.filename[:-4])
+        time.sleep(3.5)
+        return JSONResponse(content={"Success": "Prueba lista"}, status_code=200)
+    except:
+        return JSONResponse(
+            content={
+                "Error": "Hay un error desconocido con el archivo, intentelo de nuevo más tarde"
+            },
+            status_code=415,
+        )
+
+
+@router.post("/API/Unhide/IMG", tags=["Recive Imagen"])
+async def decrypt_image(file: UploadFile = File(...)):
+    try:
+        if file.filename[-4:] in cifFormats:
+            # Uno la ruta de imgCifFolder con el nombre del archivo menos la extensión
+            file_folder = os.path.join(imgCifFolder, file.filename[:-4])
             # Creo la ruta final del archivo
             os.makedirs(file_folder, exist_ok=True)
             # Guardo el archivo dentro de la carpeta
@@ -123,35 +139,19 @@ async def reciveImage(file: UploadFile = File(...)):
                 content = await file.read()
                 F.write(content)
                 F.close()
-            res_divide = await divide_img.divide(file_path, file.filename)
-            # Respondo un archivo con la dirección de guardado
-            if res_divide["success"] == True:  # esto también debería ir en un try catch
-                res_hide = await hide_img(
-                    res_divide["img_yfile"],
-                    res_divide["img_cbmin"],
-                    res_divide["img_crmin"],
-                )
-                if res_hide["success"] == True:
-                    return FileResponse(res_hide["y-hided"])
-                    # Acá comienzo el cifrado
-                    # res_cif = await cypher_image(clave, iv, file_path, file.filename)
-                else:
-                    return JSONResponse(
-                        content={
-                            "Error": res_hide["error"],
-                        }
-                    )
-                res_uncif = await decipher_image(clave, iv, file_path, file.filename)
+            res_merge = await merge_img.merge(file_path, file.filename)
+            print(file_path)
+            if res_merge["success"] == True:
+                return {"Success": res_merge["success"]}
             else:
                 return JSONResponse(
                     content={
-                        "Error": res_divide["error"],
-                    },
-                    status_code=415,
+                        "Error": res_merge["error"],
+                    }
                 )
         else:
             return JSONResponse(
-                content={"Error": "La extención del archivo no es válida"},
+                content={"Error": "la extención del archivo no es válida"},
                 status_code=415,
             )
     except:
