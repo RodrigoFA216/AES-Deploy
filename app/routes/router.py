@@ -114,15 +114,11 @@ async def reciveImage(file: UploadFile = File(...)):
 @router.post("/API/Unhide/", tags=["Recive Imagen"])
 async def reciveImage(file: UploadFile = File(...)):
     try:
-        time.sleep(3.5)
-        return JSONResponse(content={"Success": "Prueba lista"}, status_code=200)
+        time.sleep(9)
+        file_folder = os.path.join(imgFolder, "IMG2/IMG2.jpg")
+        return FileResponse(file_folder)
     except:
-        return JSONResponse(
-            content={
-                "Error": "Hay un error desconocido con el archivo, intentelo de nuevo más tarde"
-            },
-            status_code=415,
-        )
+        return JSONResponse(content={"Success": "Prueba lista"}, status_code=200)
 
 
 @router.post("/API/Unhide/IMG", tags=["Recive Imagen"])
@@ -201,7 +197,7 @@ async def decrypt_image(file: UploadFile = File(...)):
         )
 
 
-@router.post("/API/Unhide/dev", tags=["Recive Imagen"])
+@router.post("/API/Unhide/dev2", tags=["Recive Imagen"])
 async def decrypt_image(file: UploadFile = File(...)):
     if file.filename[-4:] in cifFormats:
         # Uno la ruta de imgCifFolder con el nombre del archivo menos la extensión
