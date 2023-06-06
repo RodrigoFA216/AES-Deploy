@@ -199,3 +199,34 @@ async def decrypt_image(file: UploadFile = File(...)):
             },
             status_code=415,
         )
+
+
+@router.post("/API/Unhide/dev", tags=["Recive Imagen"])
+async def decrypt_image(file: UploadFile = File(...)):
+    if file.filename[-4:] in cifFormats:
+        # Uno la ruta de imgCifFolder con el nombre del archivo menos la extensión
+        file_folder = os.path.join(imgCifFolder, file.filename[:-4])
+        # Creo la ruta final del archivo
+        os.makedirs(file_folder, exist_ok=True)
+        # Guardo el archivo dentro de la carpeta
+        file_path = os.path.join(file_folder, file.filename)
+        with open(file_path, "wb") as F:
+            content = await file.read()
+            F.write(content)
+            F.close()
+        res_merge = await merge_img.merge(file_path, file.filename)
+        print(file_path)
+        if res_merge["success"] == True:
+            return FileResponse(res_merge["img"])
+            # return {"Success": res_merge["success"]}
+        else:
+            return JSONResponse(
+                content={
+                    "Error": res_merge["error"],
+                }
+            )
+    else:
+        return JSONResponse(
+            content={"Error": "la extención del archivo no es válida"},
+            status_code=415,
+        )

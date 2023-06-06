@@ -2,36 +2,36 @@
 
 # print(vector[: (len(vector) // 2)])
 
-from app.functions.eval import calculate_psnr
-import cv2
+# from app.functions.eval import calculate_psnr
+# import cv2
 
-img_hided = "C:/Users/ThinkPad/Documents/TITULACION_CEDILLO/AES-Deploy/app/temp/img/IMG30/IMG30-Y-hided-.jpg"
-img_Y = "C:/Users/ThinkPad/Documents/TITULACION_CEDILLO/AES-Deploy/app/temp/img/IMG30/IMG30-Y-.jpg"
-img_cb = "C:/Users/ThinkPad/Documents/TITULACION_CEDILLO/AES-Deploy/app/temp/img/IMG30/IMG30-Cb-.jpg"
-img_cr = "C:/Users/ThinkPad/Documents/TITULACION_CEDILLO/AES-Deploy/app/temp/img/IMG30/IMG30-Cr-.jpg"
-
-
-imgY = cv2.imread(img_Y, cv2.IMREAD_UNCHANGED)
-imgCB = cv2.imread(img_cb, cv2.IMREAD_UNCHANGED)
-imgCR = cv2.imread(img_cr, cv2.IMREAD_UNCHANGED)
-
-imgYCBCR = cv2.merge([imgY, imgCB, imgCR])
-cv2.imwrite(
-    "C:/Users/ThinkPad/Documents/TITULACION_CEDILLO/AES-Deploy/app/temp/img/IMG30/IMG30-m.jpg",
-    imgYCBCR,
-)
-imgRGB = cv2.cvtColor(imgYCBCR, cv2.COLOR_YCrCb2BGR)
-cv2.imwrite(
-    "C:/Users/ThinkPad/Documents/TITULACION_CEDILLO/AES-Deploy/app/temp/img/IMG30/IMG30-n.jpg",
-    imgRGB,
-)
+# img_hided = "C:/Users/ThinkPad/Documents/TITULACION_CEDILLO/AES-Deploy/app/temp/img/IMG30/IMG30-Y-hided-.jpg"
+# img_Y = "C:/Users/ThinkPad/Documents/TITULACION_CEDILLO/AES-Deploy/app/temp/img/IMG30/IMG30-Y-.jpg"
+# img_cb = "C:/Users/ThinkPad/Documents/TITULACION_CEDILLO/AES-Deploy/app/temp/img/IMG30/IMG30-Cb-.jpg"
+# img_cr = "C:/Users/ThinkPad/Documents/TITULACION_CEDILLO/AES-Deploy/app/temp/img/IMG30/IMG30-Cr-.jpg"
 
 
-result = calculate_psnr(
-    "C:/Users/ThinkPad/Documents/TITULACION_CEDILLO/AES-Deploy/app/temp/img/IMG30/IMG30-n.jpg",
-    "C:/Users/ThinkPad/Documents/TITULACION_CEDILLO/AES-Deploy/app/temp/img/IMG30/IMG30.jpg",
-)
-print(result)
+# imgY = cv2.imread(img_Y, cv2.IMREAD_UNCHANGED)
+# imgCB = cv2.imread(img_cb, cv2.IMREAD_UNCHANGED)
+# imgCR = cv2.imread(img_cr, cv2.IMREAD_UNCHANGED)
+
+# imgYCBCR = cv2.merge([imgY, imgCB, imgCR])
+# cv2.imwrite(
+#     "C:/Users/ThinkPad/Documents/TITULACION_CEDILLO/AES-Deploy/app/temp/img/IMG30/IMG30-m.jpg",
+#     imgYCBCR,
+# )
+# imgRGB = cv2.cvtColor(imgYCBCR, cv2.COLOR_YCrCb2BGR)
+# cv2.imwrite(
+#     "C:/Users/ThinkPad/Documents/TITULACION_CEDILLO/AES-Deploy/app/temp/img/IMG30/IMG30-n.jpg",
+#     imgRGB,
+# )
+
+
+# result = calculate_psnr(
+#     "C:/Users/ThinkPad/Documents/TITULACION_CEDILLO/AES-Deploy/app/temp/img/IMG30/IMG30-n.jpg",
+#     "C:/Users/ThinkPad/Documents/TITULACION_CEDILLO/AES-Deploy/app/temp/img/IMG30/IMG30.jpg",
+# )
+# print(result)
 
 # ----------------------------------------------------------------
 # Reemplaza los valores del array 2 en el vector arr1
@@ -198,3 +198,20 @@ print(result)
 # grupos = np.array([mi_string[i : i + 8] for i in range(0, longitud_total, 8)])
 
 # print(grupos, cantidad_grupos, hay_incompleto)
+
+# ----------------------------------------------------------------
+# transforma string a un vector de numpy
+# ----------------------------------------------------------------
+import numpy as np
+
+arr = np.array(
+    [[1, 2, 3, 4, 5, 6], [1, 2, 3, 4, 5, 6], [1, 2, 3, 4, 5, 6], [1, 2, 3, 4, 5, 6]]
+)
+
+array = arr.flatten()
+
+print(array[: len(array) // 2])
+
+print(array)
+
+print(type(arr))
