@@ -29,10 +29,9 @@ async def hide_img(path_y, path_a, path_b):
         }
     else:
         # Hago las matrices un vector
-        Y_vector = Y.flatten()
-        A_vector = A.flatten()
-        B_vector = B.flatten()
-        arr = np.array([[1, 2, 3, 4, 5, 6, 7, 8, 9]])
+        Y_vector = Y.ravel()
+        A_vector = A.ravel()
+        B_vector = B.ravel()
         bin_func = np.vectorize(  # Función que convierte todo a binario
             lambda x: complete_octet(format(x, "b"))
         )
@@ -68,4 +67,5 @@ async def hide_img(path_y, path_a, path_b):
             "success": True,
             "error": None,
             "y-hided": img_y_hided,
+            "data": Y_vec_bin_hided_int_reshaped,
         }

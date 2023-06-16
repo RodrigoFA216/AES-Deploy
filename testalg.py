@@ -202,16 +202,179 @@
 # ----------------------------------------------------------------
 # transforma string a un vector de numpy
 # ----------------------------------------------------------------
-import numpy as np
+# import numpy as np
 
-arr = np.array(
-    [[1, 2, 3, 4, 5, 6], [1, 2, 3, 4, 5, 6], [1, 2, 3, 4, 5, 6], [1, 2, 3, 4, 5, 6]]
-)
+# arr = np.array(
+#     [[1, 2, 3, 4, 5, 6], [1, 2, 3, 4, 5, 6], [1, 2, 3, 4, 5, 6], [1, 2, 3, 4, 5, 6]]
+# )
 
-array = arr.flatten()
+# array = arr.flatten()
 
-print(array[: len(array) // 2])
+# print(array[: len(array) // 2])
 
-print(array)
+# print(array)
 
-print(type(arr))
+# print(type(arr))
+
+# ----------------------------------------------------------------
+# reemplaza string en un vector de numpy
+# ----------------------------------------------------------------
+# import numpy as np
+
+# A = np.array(["string1_", "string2_", "string3_"])
+# B = "ABC"
+
+# for i, string in enumerate(A):
+#     A[i] = string[:-1] + B[i]
+
+# print(A)
+
+# C = np.array([[1, 2, 3], [4, 5, 6]])
+
+# flattened_vector = C.ravel()
+
+# print(flattened_vector)
+
+
+# ----------------------------------------------------------------
+# cifrado y descifrado para imagen
+# ----------------------------------------------------------------
+# from Crypto.Cipher import AES
+# from Crypto.Util import Counter
+# from Crypto.Random import get_random_bytes
+# from Crypto.Util.Padding import pad, unpad
+# import os
+
+
+# def encrypt_image_aes_ofb(image_path, key):
+#     cipher = AES.new(key, AES.MODE_OFB)
+#     with open(image_path, "rb") as file:
+#         plaintext = file.read()
+#     ciphertext = cipher.encrypt(plaintext)
+#     encrypted_image_path = (
+#         os.path.splitext(image_path)[0] + "_encrypted" + os.path.splitext(image_path)[1]
+#     )
+#     with open(encrypted_image_path, "wb") as file:
+#         file.write(ciphertext)
+#     print("Imagen cifrada correctamente. Ruta: ", encrypted_image_path)
+
+
+# def decrypt_image_aes_ofb(encrypted_image_path, key):
+#     cipher = AES.new(key, AES.MODE_OFB)
+#     with open(encrypted_image_path, "rb") as file:
+#         ciphertext = file.read()
+#     decrypted_image = cipher.decrypt(ciphertext)
+#     decrypted_image_path = (
+#         os.path.splitext(image_path)[0] + "_decrypted" + os.path.splitext(image_path)[1]
+#     )
+#     with open(decrypted_image_path, "wb") as file:
+#         file.write(decrypted_image)
+#     print("Imagen descifrada correctamente. Ruta: ", decrypted_image_path)
+
+
+# # Ejemplo de uso
+# image_path = "C:/Users/ThinkPad/Documents/TITULACION_CEDILLO/AES-Deploy/app/temp/img/IMG0/IMG0.jpg"
+# key = get_random_bytes(16)  # Clave de 16 bytes para AES-128
+
+# encrypt_image_aes_ofb(image_path, key)
+# decrypt_image_aes_ofb(image_path, key)
+
+
+import cv2
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from cryptography.hazmat.primitives import padding
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+
+
+def encrypt_image(image_path, key):
+    # Leer la imagen
+    image = cv2.imread(image_path)
+
+    # Obtener los datos de la imagen
+    image_data = image.tobytes()
+
+    # Generar una clave derivada usando PBKDF2
+    salt = b"\x00" * 16  # Salt fija para simplificar el ejemplo
+    kdf = PBKDF2HMAC(
+        algorithm=hashes.SHA256(),
+        length=32,
+        salt=salt,
+        iterations=100000,
+        backend=default_backend(),
+    )
+    derived_key = kdf.derive(key)
+
+    # Generar un vector de inicialización (IV) aleatorio
+    iv = b"\x00" * 16  # IV fijo para simplificar el ejemplo
+
+    # Crear un cifrador AES en el modo OFB
+    cipher = Cipher(
+        algorithms.AES(derived_key), modes.OFB(iv), backend=default_backend()
+    )
+    encryptor = cipher.encryptor()
+
+    # Cifrar los datos de la imagen
+    encrypted_data = encryptor.update(image_data) + encryptor.finalize()
+
+    # Guardar la imagen cifrada en un archivo
+    encrypted_image_path = image_path + ".encrypted"
+    with open(encrypted_image_path, "wb") as encrypted_file:
+        encrypted_file.write(encrypted_data)
+
+    print("Imagen cifrada guardada:", encrypted_image_path)
+
+
+def decrypt_image(encrypted_image_path, key):
+    # Leer la imagen cifrada
+    with open(encrypted_image_path, "rb") as encrypted_file:
+        encrypted_data = encrypted_file.read()
+
+    # Generar una clave derivada usando PBKDF2
+    salt = b"\x00" * 16  # Salt fija para simplificar el ejemplo
+    kdf = PBKDF2HMAC(
+        algorithm=hashes.SHA256(),
+        length=32,
+        salt=salt,
+        iterations=100000,
+        backend=default_backend(),
+    )
+    derived_key = kdf.derive(key)
+
+    # Obtener el vector de inicialización (IV) del archivo cifrado
+    iv = b"\x00" * 16  # IV fijo para simplificar el ejemplo
+
+    # Crear un cifrador AES en el modo OFB
+    cipher = Cipher(
+        algorithms.AES(derived_key), modes.OFB(iv), backend=default_backend()
+    )
+    decryptor = cipher.decryptor()
+
+    # Descifrar los datos de la imagen
+    decrypted_data = decryptor.update(encrypted_data) + decryptor.finalize()
+
+    # Crear una imagen a partir de los datos descifrados
+    decrypted_image = np.frombuffer(decrypted_data, dtype=np.uint8).reshape(image_shape)
+
+    # Guardar la imagen descifrada en un archivo
+    decrypted_image_path = encrypted_image_path + ".decrypted.jpg"
+    cv2.imwrite(decrypted_image_path, decrypted_image)
+
+    print("Imagen descifrada guardada:", decrypted_image_path)
+
+
+# Ruta de la imagen a cifrar
+image_path = "C:/Users/ThinkPad/Documents/TITULACION_CEDILLO/AES-Deploy/app/temp/img/IMG0/IMG0.jpg"
+
+# Clave para cifrar y descifrar la imagen
+key = b"mi_clave_secreta"
+
+# Cifrar la imagen
+encrypt_image(image_path, key)
+
+# Ruta de la imagen cifrada
+encrypted_image_path = image_path + ".encrypted"
+
+# Descifrar la imagen
+decrypt_image(encrypted_image_path, key)

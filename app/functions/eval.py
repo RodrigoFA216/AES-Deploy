@@ -33,3 +33,14 @@ def completar_matriz(matriz):
         "data": matriz_completa,
         "missing": columnas_faltantes,
     }
+
+
+def calculate_ssim(image_path1, image_path2):
+    # Cargar las imágenes utilizando OpenCV
+    img1 = cv2.imread(image_path1, cv2.IMREAD_GRAYSCALE)
+    img2 = cv2.imread(image_path2, cv2.IMREAD_GRAYSCALE)
+    # Calcular el SSIM utilizando la función de OpenCV
+    (score, diff) = cv2.compareSSIM(img1, img2, full=True)
+    # Ajustar el rango de puntuación de -1 a 1 a 0 a 1
+    score = (score + 1) / 2.0
+    return score

@@ -38,15 +38,15 @@ async def merge(path, name):
         ultimo_caracter = [s[-1] for s in img_vector_bin]
         # print(len(ultimo_caracter))
         # ultimo_caracter = ultimo_caracter[: len(ultimo_caracter) // 2]
-        print(len(ultimo_caracter))
+        print("Extracción: ", len(ultimo_caracter))
         resultado = "".join(ultimo_caracter)
         mi_string = resultado
         longitud_total = len(mi_string)
         cantidad_grupos = longitud_total // 8
         hay_incompleto = longitud_total % 8 != 0
         grupos = np.array([mi_string[i : i + 8] for i in range(0, longitud_total, 8)])
-        print("Longitud", len(grupos))
-        print("Muestra", grupos[-1])
+        print("Longitud grupos: ", len(grupos))
+        print("Muestra: ", grupos[-1])
         # return {"success": True, "error": None}
         if hay_incompleto:
             return {
@@ -59,20 +59,13 @@ async def merge(path, name):
             segundo_componente = info_dec[len(info_dec) // 2 :]
             # primer_componente_dec = int_func(primer_componente)
             # segundo_componente_dec = int_func(segundo_componente)
-            print("muestra 2", len(primer_componente))
+            print("Longitud componente: ", len(primer_componente))
+            print("Muestra: ", primer_componente[-1])
             # print("muestra 3", primer_componente_dec)
             comp_1_reshaped = np.reshape(primer_componente, (search_h, search_w))
             comp_2_reshaped = np.reshape(segundo_componente, (search_h, search_w))
             comp_1_reshaped_u = comp_1_reshaped.astype(np.uint8)
             comp_2_reshaped_u = comp_2_reshaped.astype(np.uint8)
-            comp_image = cv2.merge(
-                [
-                    np.zeros_like(comp_1_reshaped_u),
-                    comp_1_reshaped_u,
-                    np.zeros_like(comp_1_reshaped_u),
-                ]
-            )
-            cv2.imwrite(carpeta_img[:-4] + "-F-" + open_img[-4:], comp_image)
             # Redimensionar las componentes de color
             cb_redim = cv2.resize(
                 comp_1_reshaped_u, (w, h), interpolation=cv2.INTER_CUBIC
@@ -83,6 +76,14 @@ async def merge(path, name):
             # Aplicar GaussianBlur
             cb_redim_smooth = cv2.GaussianBlur(cb_redim, (3, 3), 0)
             cr_redim_smooth = cv2.GaussianBlur(cr_redim, (3, 3), 0)
+            comp_image = cv2.merge(
+                [
+                    np.zeros_like(comp_1_reshaped_u),
+                    comp_1_reshaped_u,
+                    np.zeros_like(comp_1_reshaped_u),
+                ]
+            )
+            comp_image = cv2.cvtColor(comp_image, cv2.COLOR_BGR2YCrCb)
             cb_image = cv2.merge(
                 [
                     np.zeros_like(cr_redim_smooth),
@@ -90,7 +91,9 @@ async def merge(path, name):
                     cb_redim_smooth,
                 ]
             )
+            cb_image = cv2.cvtColor(cb_image, cv2.COLOR_BGR2YCrCb)
             cv2.imwrite(carpeta_img[:-4] + "-T-" + open_img[-4:], cb_image)
+            cv2.imwrite(carpeta_img[:-4] + "-F-" + open_img[-4:], comp_image)
             image_merged = cv2.merge([img, cb_redim_smooth, cr_redim_smooth])
             image_merged_rgb = cv2.cvtColor(image_merged, cv2.COLOR_YCrCb2BGR)
             img_merg = f"{carpeta_img[:-4]}-M-{open_img[-4:]}"
