@@ -11,6 +11,7 @@ from app.schemas.item_scheme import ItemScheme
 from app.functions import divide_img, verify, merge_img
 from app.functions.AES_cypher import cypher_image
 from app.functions.AES_decrypt import decipher_image
+from app.functions.AES_CIF_UNCIF import encrypt_image_aes_ofb, decrypt_image_aes_ofb
 from app.functions.LSB import hide_img
 
 router = APIRouter()
@@ -28,7 +29,7 @@ clave = b"LlaveSecreta1234"  # la clave debe tener 16, 24 o 32 bytes de longitud
 iv = b"VectorInicial123"  # el vector inicial debe tener 16 bytes de longitud
 
 
-@router.post("/API/Encrypt/Image", tags=["Recive Imagen", "color"])
+@router.post("/API/Encrypt/Image", tags=["Alfa", "Recive Imagen", "color"])
 async def reciveImage(file: UploadFile = File(...)):
     try:
         if file.filename[-4:] in imgFormats:
@@ -55,8 +56,9 @@ async def reciveImage(file: UploadFile = File(...)):
                         res_hide["y-hided"], file.filename
                     )
                     # Acá comienzo el cifrado
-                    res_cif = await cypher_image(clave, iv, file_path, file.filename)
-                    return FileResponse(res_hide["y-hided"])
+                    # res_cif = await cypher_image(clave, iv, file_path, file.filename)
+                    res_decrypt = await encrypt_image_aes_ofb(file_path, key)
+                    return FileResponse(res_decrypt)
                 else:
                     return JSONResponse(
                         content={
@@ -82,7 +84,7 @@ async def reciveImage(file: UploadFile = File(...)):
         )
 
 
-@router.post("/API/Hide/", tags=["Recive Imagen", "color"])
+@router.post("/API/Hide/", tags=["Alfa", "Recive Imagen", "color"])
 async def reciveImage(file: UploadFile = File(...)):
     if file.filename[-4:] in imgFormats:
         # Uno la ruta de imgFolder con el nombre del archivo menos la extensión
@@ -185,7 +187,7 @@ async def reciveImage(file: UploadFile = File(...)):
         return JSONResponse(content={"Success": "Prueba lista"}, status_code=200)
 
 
-@router.post("/API/Unhide/", tags=["Recive Imagen", "gray"])
+@router.post("/API/Unhide/", tags=["Alfa", "Recive Imagen", "gray"])
 async def decrypt_image(file: UploadFile = File(...)):
     try:
         if file.filename[-4:] in cifFormats:
@@ -202,7 +204,7 @@ async def decrypt_image(file: UploadFile = File(...)):
             res_merge = await merge_img.merge(file_path, file.filename)
             print(file_path)
             if res_merge["success"] == True:
-                return {"Success": res_merge["success"]}
+                return FileResponse(res_merge["img"])
             else:
                 return JSONResponse(
                     content={

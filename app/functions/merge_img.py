@@ -27,7 +27,7 @@ async def merge(path, name):
         search_w = w // 4
         print(h, w, search_h, search_w)
         # Convierto la matriz en vector
-        img_vector = img.flatten()
+        img_vector = img.ravel()
         bin_func = np.vectorize(  # combierte todo a binario
             lambda x: complete_octet(format(x, "b"))
         )
@@ -35,7 +35,11 @@ async def merge(path, name):
         # Convierto la imágen en binario
         img_vector_bin = bin_func(img_vector)
         # Extraigo la información de la imágen
-        ultimo_caracter = [s[-1] for s in img_vector_bin]
+        print(type(img_vector_bin))
+        ultimo_caracter = ""
+        for string in img_vector_bin:
+            ultimo_caracter += string[-1]
+        # ultimo_caracter = [s[-1] for s in img_vector_bin]
         # print(len(ultimo_caracter))
         # ultimo_caracter = ultimo_caracter[: len(ultimo_caracter) // 2]
         print("Extracción: ", len(ultimo_caracter))

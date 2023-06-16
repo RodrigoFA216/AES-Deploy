@@ -42,6 +42,7 @@ async def hide_img(path_y, path_a, path_b):
         Y_vec_bin = bin_func(Y_vector)
         A_vec_bin = bin_func(A_vector)
         B_vec_bin = bin_func(B_vector)
+        print("something", B_vector[-1])
         # Concateno los vectores en un string de información
         A_vec_bin_full = "".join(A_vec_bin)
         B_vec_bin_full = "".join(B_vec_bin)
@@ -51,13 +52,10 @@ async def hide_img(path_y, path_a, path_b):
         print("height: ", ah, ah % 16, " width: ", aw, aw % 16)
         print("height: ", bh, bh % 16, " width: ", bw, bw % 16)
         # Inicio el ocultamiento de la información
-        Y_vec_bin_hided = Y_vec_bin
-        for indice, elemento in enumerate(info_hide):
-            aux = Y_vec_bin_hided[indice]
-            aux = aux[:-1] + elemento
-            Y_vec_bin_hided[indice] = aux
+        for indice, elemento in enumerate(Y_vec_bin):
+            Y_vec_bin[indice] = elemento[:-1] + info_hide[indice]
         # Convierto la información ocultada en decimal
-        Y_vec_bin_hided_int = int_func(Y_vec_bin_hided)
+        Y_vec_bin_hided_int = int_func(Y_vec_bin)
         # Regreso la info a sus dimenciones de matriz
         Y_vec_bin_hided_int_reshaped = np.reshape(Y_vec_bin_hided_int, (h, w))
         # Guardo la imágen y regreso los valores
