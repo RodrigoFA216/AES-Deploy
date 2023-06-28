@@ -84,6 +84,63 @@ async def reciveImage(file: UploadFile = File(...)):
         )
 
 
+@router.post("/API/Decrypt/Image", tags=["Alfa", "Recive Imagen", "color"])
+async def reciveImage(file: UploadFile = File(...)):
+    try:
+        if file.filename[-4:] in cifFormats:
+            # Uno la ruta de imgFolder con el nombre del archivo menos la extensión
+            file_folder = os.path.join(imgFolder, file.filename[:-4])
+            # Creo la ruta final del archivo
+            os.makedirs(file_folder, exist_ok=True)
+            # Guardo el archivo dentro de la carpeta
+            file_path = os.path.join(file_folder, file.filename)
+            with open(file_path, "wb") as F:
+                content = await file.read()
+                F.write(content)
+                F.close()
+            res_divide = await divide_img.divide(file_path, file.filename)
+            res_decrypt = await decrypt_image_aes_ofb(file_path, key)
+            return FileResponse(res_decrypt)
+            # Respondo un archivo con la dirección de guardado
+            if res_divide["success"] == True:  # esto también debería ir en un try catch
+                res_hide = await hide_img(
+                    res_divide["img_yfile"],
+                    res_divide["img_cbmin"],
+                    res_divide["img_crmin"],
+                )
+                if res_hide["success"] == True:
+                    res_merge = await merge_img.merge(
+                        res_hide["y-hided"], file.filename
+                    )
+                    # Acá comienzo el cifrado
+                    # res_cif = await cypher_image(clave, iv, file_path, file.filename)
+                    res_decrypt = await encrypt_image_aes_ofb(file_path, key)
+                    return FileResponse(res_decrypt)
+                else:
+                    return JSONResponse(
+                        content={
+                            "Error": res_hide["error"],
+                        }
+                    )
+                res_uncif = await decipher_image(clave, iv, file_path, file.filename)
+            else:
+                return JSONResponse(
+                    content={
+                        "Error": res_divide["error"],
+                    },
+                    status_code=415,
+                )
+        else:
+            return JSONResponse(
+                content={"Error": "La extención del archivo no es válida"},
+                status_code=415,
+            )
+    except:
+        return JSONResponse(
+            content={"Error": "Algo Falló con el archivo"}, status_code=200
+        )
+
+
 @router.post("/API/Hide/", tags=["Alfa", "Recive Imagen", "color"])
 async def reciveImage(file: UploadFile = File(...)):
     if file.filename[-4:] in imgFormats:
